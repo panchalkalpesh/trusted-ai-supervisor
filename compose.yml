@@ -1,6 +1,17 @@
 version: "3.9"
 
 services:
+  postgres:
+    image: postgres:15-alpine
+    environment:
+      POSTGRES_USER: pms_user
+      POSTGRES_PASSWORD: pms_pass
+      POSTGRES_DB: pms_db
+    volumes:
+      - db_data:/var/lib/postgresql/data
+    ports:
+      - "5432:5432"
+
   backend:
     image: oven/bun:latest
     working_dir: /app
@@ -9,6 +20,11 @@ services:
       - "3000:3000"
     volumes:
       - ./backend:/app
+    mem_limit: 512m
+    cpus: 0.5
+    depends_on:
+      - postgres
+      - untrusted_sandbox
 
   frontend:
     image: oven/bun:latest
@@ -18,3 +34,19 @@ services:
       - ./frontend:/app
     ports:
       - "5173:5173"
+    environment:
+      API_BASE: "http://localhost:8787"
+
+  untrusted_sandbox:
+    image: oven/bun:latest
+    command: ["bun", "run", "index.ts"]
+    working_dir: /app
+    ports:
+      - "5005:5005"
+    mem_limit: 256m
+    cpus: 0.25
+    volumes:
+      - ./sandbox:/app
+
+volumes:
+  db_data:
