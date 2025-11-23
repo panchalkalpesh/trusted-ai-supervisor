@@ -1,9 +1,7 @@
-const DB: any[] = [];
+let memory: any[] = [];
 
-export function addToIndex(item: any) {
-  DB.push(item);
-}
+export function addToIndex(incident: any) { memory.push(incident); }
 
-export async function searchSimilar(prompt: any) {
-  return DB.filter(x => (x.run?.prompt_text || '').includes((prompt || '').slice(0, 6)));
+export async function searchSimilar(prompt: string) {
+  return memory.filter(x => (x.run?.prompt_text || '').includes((prompt || '').slice(0, 6)));
 }

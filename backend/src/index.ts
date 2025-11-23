@@ -1,19 +1,18 @@
 import { Hono } from "hono";
 import { cors } from "hono/cors";
 import incidents from "./routes/incidents";
+import probe from "./routes/probe";
+import health from "./routes/health";
 
 
 const app = new Hono();
 
-app.use('/incidents/*', cors());
+app.use('/*', cors());
 
 app.route("/incidents", incidents);
 
-app.get("/health", (c) => {
-  const timestamp = new Date();
-  const app = 'tms-backend';
-  return c.json({ app, ok: true, timestamp })
-});
+app.route('/probe', probe)
 
+app.route("/health", health);
 
 export default app;

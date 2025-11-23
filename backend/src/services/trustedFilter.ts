@@ -17,12 +17,12 @@ export interface FilterResponse {
 };
 
 
-export async function runFilter(prompt: string, response: string): Promise<FilterResponse> {
+export async function runFilter(prompt: string, result: any): Promise<FilterResponse> {
   const rulesMatched: string[] = [];
   let maxRuleSeverity = 0;
 
   for (const r of RULES) {
-    if (r.re.test(prompt) || r.re.test(response)) {
+    if (r.re.test(prompt) || r.re.test(result)) {
       rulesMatched.push(r.id);
       if (r.severity > maxRuleSeverity) maxRuleSeverity = r.severity;
     }
@@ -39,7 +39,7 @@ export async function runFilter(prompt: string, response: string): Promise<Filte
           'Content-Type': 'application/json',
           'Authorization': `Bearer ${OPENAI_KEY}`
         },
-        body: JSON.stringify({ input: response })
+        body: JSON.stringify({ input: result })
       });
       const body = await res.body.json();
       const flagged = body?.results?.[0]?.flagged || false;
@@ -52,8 +52,8 @@ export async function runFilter(prompt: string, response: string): Promise<Filte
     }
   } else {
     const banned = /(kill|weapon|attack|poison|synthesize|virus|explosive)/i;
-    classifierScore = banned.test(response) ? 0.95 : 0.02;
-    classifierLabel = banned.test(response) ? 'flagged' : 'clean';
+    classifierScore = banned.test(result) ? 0.95 : 0.02;
+    classifierLabel = banned.test(result) ? 'flagged' : 'clean';
   }
 
   const finalSeverity = Math.min(1, Math.max(maxRuleSeverity, classifierScore));

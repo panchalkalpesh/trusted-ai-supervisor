@@ -39,7 +39,7 @@ async function handleQuery(request) {
     model_version: MODEL_META.model_version,
     response: responseText,
     tokens,
-    latency_ms: elapsed
+    latency: elapsed
   });
 }
 

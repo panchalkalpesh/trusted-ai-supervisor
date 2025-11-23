@@ -8,7 +8,7 @@ CREATE TABLE IF NOT EXISTS users (
 );
 
 CREATE TABLE IF NOT EXISTS runs (
-  id BIGINT PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   user_id INT REFERENCES users(id),
   prompt_text TEXT,
   model_name TEXT,
@@ -17,7 +17,7 @@ CREATE TABLE IF NOT EXISTS runs (
 );
 
 CREATE TABLE IF NOT EXISTS responses (
-  id BIGINT PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   run_id BIGINT REFERENCES runs(id),
   response_text TEXT,
   tokens INT,
@@ -26,7 +26,7 @@ CREATE TABLE IF NOT EXISTS responses (
 );
 
 CREATE TABLE IF NOT EXISTS decisions (
-  id BIGINT PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   response_id BIGINT REFERENCES responses(id),
   severity NUMERIC,
   reason TEXT,
@@ -36,7 +36,7 @@ CREATE TABLE IF NOT EXISTS decisions (
 );
 
 CREATE TABLE IF NOT EXISTS incidents (
-  id BIGINT PRIMARY KEY,
+  id BIGSERIAL PRIMARY KEY,
   decision_id BIGINT REFERENCES decisions(id),
   status TEXT,
   assigned_to INT REFERENCES users(id),
