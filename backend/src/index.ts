@@ -9,8 +9,11 @@ app.use('/incidents/*', cors());
 
 app.route("/incidents", incidents);
 
-
-app.get("/health", (c) => c.json({ ok: true }));
+app.get("/health", (c) => {
+  const timestamp = new Date();
+  const app = 'tms-backend';
+  return c.json({ app, ok: true, timestamp })
+});
 
 
 export default app;
